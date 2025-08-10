@@ -283,7 +283,23 @@ INSERT INTO products (name, description, sku, price, sale_price, cost_price, bra
 ('SmartLife Smart Plug', 'WiFi smart plug with energy monitoring', 'SL-SP-001', 24.99, 19.99, 12.00, 2, 2, 180, 36, 0.2, '3x2x1', 0, 4.5, 198),
 ('EcoTech Compostable Phone Case', 'Biodegradable phone case made from plant materials', 'ET-CP-001', 29.99, 24.99, 15.00, 3, 3, 90, 18, 0.1, '6x3x0.5', 0, 4.2, 123),
 ('PowerMax Portable Speaker', 'Waterproof portable speaker with 20-hour battery', 'PM-PS-001', 89.99, 79.99, 45.00, 4, 4, 45, 9, 1.8, '8x6x4', 0, 4.4, 89),
-('InnovateCorp Smart Scale', 'WiFi smart scale with body composition analysis', 'IC-SS-001', 149.99, 129.99, 80.00, 5, 5, 35, 7, 2.2, '12x12x1', 0, 4.6, 78);
+('InnovateCorp Smart Scale', 'WiFi smart scale with body composition analysis', 'IC-SS-001', 149.99, 129.99, 80.00, 5, 5, 35, 7, 2.2, '12x12x1', 0, 4.6, 78),
+('Fashion Forward T-Shirt', 'Premium cotton t-shirt with modern design', 'FF-TS-001', 29.99, 24.99, 15.00, 11, 11, 100, 20, 0.3, '12x8x1', 0, 4.3, 45),
+('Elegant Summer Dress', 'Lightweight summer dress with floral pattern', 'ES-SD-001', 89.99, 79.99, 45.00, 11, 11, 75, 15, 0.5, '14x10x2', 1, 4.6, 78),
+('Classic Denim Jeans', 'High-quality denim jeans with perfect fit', 'CD-DJ-001', 79.99, 69.99, 40.00, 11, 11, 60, 12, 0.8, '16x12x3', 0, 4.4, 56),
+('Athletic Running Shoes', 'Professional running shoes with cushioning', 'AR-RS-001', 129.99, 119.99, 70.00, 12, 12, 80, 16, 1.2, '18x14x4', 1, 4.7, 92),
+('Yoga Mat Premium', 'Non-slip yoga mat with carrying strap', 'YM-PM-001', 49.99, 44.99, 25.00, 12, 12, 120, 24, 1.5, '24x6x0.5', 0, 4.5, 67),
+('Basketball Court Shoes', 'High-performance basketball shoes', 'BC-CS-001', 149.99, 139.99, 80.00, 12, 12, 65, 13, 1.4, '19x15x5', 0, 4.6, 81),
+('Hiking Boots Pro', 'Waterproof hiking boots for outdoor adventures', 'HB-PRO-001', 199.99, 179.99, 110.00, 12, 12, 45, 9, 2.1, '20x16x6', 1, 4.8, 103),
+('The Great Adventure Novel', 'Bestselling adventure novel by acclaimed author', 'B-GAN-001', 19.99, 16.99, 8.00, 13, 13, 200, 40, 0.8, '8x6x1', 1, 4.7, 156),
+('Science & Technology Guide', 'Comprehensive guide to modern technology', 'B-STG-001', 34.99, 29.99, 15.00, 13, 13, 150, 30, 1.2, '10x7x1.5', 0, 4.5, 89),
+('Mystery Thriller Collection', 'Three bestselling mystery novels in one', 'B-MTC-001', 24.99, 21.99, 12.00, 13, 13, 180, 36, 1.0, '9x6x1.2', 0, 4.4, 112),
+('Business Strategy Handbook', 'Essential guide for entrepreneurs', 'B-BSH-001', 44.99, 39.99, 20.00, 13, 13, 120, 24, 1.5, '11x8x1.8', 1, 4.6, 134),
+('Office Desk Organizer', 'Multi-compartment desk organizer', 'OD-ORG-001', 39.99, 34.99, 20.00, 23, 23, 90, 18, 1.8, '12x8x6', 0, 4.3, 45),
+('Ergonomic Office Chair', 'Adjustable office chair with lumbar support', 'EO-OC-001', 299.99, 279.99, 180.00, 23, 23, 35, 7, 25.0, '28x24x42', 1, 4.8, 67),
+('Wireless Office Mouse', 'Ergonomic wireless mouse for office use', 'WO-OM-001', 49.99, 44.99, 25.00, 23, 23, 110, 22, 0.2, '6x4x2', 0, 4.4, 78),
+('Desk Lamp LED', 'Adjustable LED desk lamp with touch control', 'DL-LED-001', 79.99, 69.99, 40.00, 23, 23, 85, 17, 2.5, '15x8x25', 0, 4.5, 56),
+('Document Scanner Pro', 'High-speed document scanner for office', 'DS-PRO-001', 199.99, 179.99, 110.00, 23, 23, 40, 8, 3.2, '18x12x8', 1, 4.7, 89);
 
 -- Product Categories (many-to-many relationships)
 INSERT INTO product_categories (product_id, category_id, sort_order) VALUES
@@ -331,7 +347,23 @@ INSERT INTO product_categories (product_id, category_id, sort_order) VALUES
 (42, 9, 1), (42, 1, 2), -- Smart Plug in Smart Home and Electronics
 (43, 1, 1), (43, 22, 2), -- Phone Case in Electronics and Health & Wellness
 (44, 5, 1), (44, 8, 2), -- Portable Speaker in Audio and Outdoor
-(45, 15, 1), (45, 9, 2); -- Smart Scale in Fitness and Smart Home
+(45, 15, 1), (45, 9, 2), -- Smart Scale in Fitness and Smart Home
+(46, 12, 1), (46, 11, 2), -- Fashion Forward T-Shirt in Men and Fashion
+(47, 13, 1), (47, 11, 2), -- Elegant Summer Dress in Women and Fashion
+(48, 12, 1), (48, 11, 2), -- Classic Denim Jeans in Men and Fashion
+(49, 15, 1), (49, 14, 2), -- Athletic Running Shoes in Fitness and Sports
+(50, 15, 1), (50, 14, 2), -- Yoga Mat Premium in Fitness and Sports
+(51, 15, 1), (51, 14, 2), -- Basketball Court Shoes in Fitness and Sports
+(52, 16, 1), (52, 14, 2), -- Hiking Boots Pro in Outdoor Sports and Sports
+(53, 18, 1), (53, 17, 2), -- The Great Adventure Novel in Fiction and Books
+(54, 19, 1), (54, 17, 2), -- Science & Technology Guide in Non-Fiction and Books
+(55, 18, 1), (55, 17, 2), -- Mystery Thriller Collection in Fiction and Books
+(56, 19, 1), (56, 17, 2), -- Business Strategy Handbook in Non-Fiction and Books
+(57, 23, 1), -- Office Desk Organizer in Office
+(58, 23, 1), -- Ergonomic Office Chair in Office
+(59, 23, 1), -- Wireless Office Mouse in Office
+(60, 23, 1), -- Desk Lamp LED in Office
+(61, 23, 1); -- Document Scanner Pro in Office
 
 -- Product Images
 INSERT INTO product_images (product_id, image_url, alt_text, is_primary, sort_order) VALUES
@@ -381,7 +413,23 @@ INSERT INTO product_images (product_id, image_url, alt_text, is_primary, sort_or
 (42, 'https://example.com/products/smart-plug-1.jpg', 'SmartLife Smart Plug', 1, 1),
 (43, 'https://example.com/products/phone-case-1.jpg', 'EcoTech Compostable Phone Case', 1, 1),
 (44, 'https://example.com/products/portable-speaker-1.jpg', 'PowerMax Portable Speaker', 1, 1),
-(45, 'https://example.com/products/smart-scale-1.jpg', 'InnovateCorp Smart Scale', 1, 1);
+(45, 'https://example.com/products/smart-scale-1.jpg', 'InnovateCorp Smart Scale', 1, 1),
+(46, 'https://example.com/products/fashion-tshirt-1.jpg', 'Fashion Forward T-Shirt', 1, 1),
+(47, 'https://example.com/products/summer-dress-1.jpg', 'Elegant Summer Dress', 1, 1),
+(48, 'https://example.com/products/denim-jeans-1.jpg', 'Classic Denim Jeans', 1, 1),
+(49, 'https://example.com/products/running-shoes-1.jpg', 'Athletic Running Shoes', 1, 1),
+(50, 'https://example.com/products/yoga-mat-1.jpg', 'Yoga Mat Premium', 1, 1),
+(51, 'https://example.com/products/basketball-shoes-1.jpg', 'Basketball Court Shoes', 1, 1),
+(52, 'https://example.com/products/hiking-boots-1.jpg', 'Hiking Boots Pro', 1, 1),
+(53, 'https://example.com/products/adventure-novel-1.jpg', 'The Great Adventure Novel', 1, 1),
+(54, 'https://example.com/products/tech-guide-1.jpg', 'Science & Technology Guide', 1, 1),
+(55, 'https://example.com/products/mystery-collection-1.jpg', 'Mystery Thriller Collection', 1, 1),
+(56, 'https://example.com/products/business-handbook-1.jpg', 'Business Strategy Handbook', 1, 1),
+(57, 'https://example.com/products/desk-organizer-1.jpg', 'Office Desk Organizer', 1, 1),
+(58, 'https://example.com/products/office-chair-1.jpg', 'Ergonomic Office Chair', 1, 1),
+(59, 'https://example.com/products/wireless-mouse-1.jpg', 'Wireless Office Mouse', 1, 1),
+(60, 'https://example.com/products/desk-lamp-1.jpg', 'Desk Lamp LED', 1, 1),
+(61, 'https://example.com/products/document-scanner-1.jpg', 'Document Scanner Pro', 1, 1);
 
 -- Reviews
 INSERT INTO reviews (product_id, user_id, rating, title, comment, is_verified_purchase) VALUES
@@ -431,7 +479,23 @@ INSERT INTO reviews (product_id, user_id, rating, title, comment, is_verified_pu
 (42, 4, 5, 'Smart plug', 'Easy to control and monitor energy usage.', 1),
 (43, 5, 4, 'Eco phone case', 'Good protection and biodegradable material.', 1),
 (44, 1, 4, 'Portable speaker', 'Good sound quality and long battery life.', 1),
-(45, 2, 5, 'Smart scale', 'Tracks all my health metrics accurately.', 1);
+(45, 2, 5, 'Smart scale', 'Tracks all my health metrics accurately.', 1),
+(46, 3, 4, 'Great t-shirt', 'Comfortable and stylish. Perfect fit for everyday wear.', 1),
+(47, 4, 5, 'Beautiful dress', 'Absolutely love this dress! Perfect for summer events.', 1),
+(48, 5, 4, 'Quality jeans', 'Great fit and durable material. Worth the price.', 1),
+(49, 1, 5, 'Excellent running shoes', 'Perfect for my daily runs. Great cushioning and support.', 1),
+(50, 2, 4, 'Good yoga mat', 'Non-slip surface works well. Carrying strap is convenient.', 1),
+(51, 3, 5, 'Great basketball shoes', 'Excellent performance on the court. Great ankle support.', 1),
+(52, 4, 5, 'Perfect hiking boots', 'Waterproof and comfortable for long hikes.', 1),
+(53, 5, 5, 'Amazing novel', 'Could not put it down! Highly recommend for adventure lovers.', 1),
+(54, 1, 4, 'Informative guide', 'Well-written and comprehensive. Great for tech enthusiasts.', 1),
+(55, 2, 4, 'Thrilling collection', 'Three great mystery novels in one. Excellent value.', 1),
+(56, 3, 5, 'Essential handbook', 'Must-read for anyone starting a business. Practical advice.', 1),
+(57, 4, 4, 'Good organizer', 'Keeps my desk tidy. Multiple compartments are useful.', 1),
+(58, 5, 5, 'Comfortable chair', 'Best office chair I have ever owned. Great lumbar support.', 1),
+(59, 1, 4, 'Reliable mouse', 'Good wireless performance. Battery life is decent.', 1),
+(60, 2, 4, 'Nice lamp', 'Adjustable brightness and good LED lighting.', 1),
+(61, 3, 5, 'Fast scanner', 'High-speed scanning with excellent image quality.', 1);
 
 -- Orders
 INSERT INTO orders (order_number, user_id, status, subtotal, tax_amount, shipping_amount, total_amount, shipping_address, shipping_city, shipping_state, shipping_zip_code) VALUES
@@ -478,7 +542,15 @@ INSERT INTO order_items (order_id, product_id, product_name, product_sku, quanti
 (15, 29, 'PowerMax Generator', 'PM-GE-001', 1, 349.99, 349.99),
 (15, 30, 'InnovateCorp Smart Garden', 'IC-SG-001', 1, 179.99, 179.99),
 (16, 31, 'GameMaster Pro Controller', 'GM-PC-001', 1, 79.99, 79.99),
-(16, 32, 'SoundWave Studio Headphones', 'SW-SH-001', 1, 9.99, 9.99);
+(16, 32, 'SoundWave Studio Headphones', 'SW-SH-001', 1, 9.99, 9.99),
+(17, 46, 'Fashion Forward T-Shirt', 'FF-TS-001', 2, 24.99, 49.98),
+(17, 47, 'Elegant Summer Dress', 'ES-SD-001', 1, 79.99, 79.99),
+(18, 49, 'Athletic Running Shoes', 'AR-RS-001', 1, 119.99, 119.99),
+(18, 50, 'Yoga Mat Premium', 'YM-PM-001', 1, 44.99, 44.99),
+(19, 53, 'The Great Adventure Novel', 'B-GAN-001', 1, 16.99, 16.99),
+(19, 54, 'Science & Technology Guide', 'B-STG-001', 1, 29.99, 29.99),
+(20, 57, 'Office Desk Organizer', 'OD-ORG-001', 1, 34.99, 34.99),
+(20, 58, 'Ergonomic Office Chair', 'EO-OC-001', 1, 279.99, 279.99);
 
 -- Create indexes for better performance
 CREATE INDEX idx_products_sku ON products(sku);
