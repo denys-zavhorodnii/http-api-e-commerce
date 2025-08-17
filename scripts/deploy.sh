@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Deployment script for Docker container
-# Usage: ./deploy.sh [TAG] [REMOTE_HOST] [REMOTE_USER] [PORT]
-# Example: ./deploy.sh latest my-server.com deploy 8080
-# Example: ./deploy.sh v1.0.0 my-server.com deploy 3000
+# Usage: ./deploy.sh [TAG] [REMOTE_HOST] [REMOTE_USER]
+# Example: ./deploy.sh latest my-server.com deploy
 
 set -e
 
