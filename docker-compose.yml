@@ -4,18 +4,18 @@ services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "3010:3010"
     volumes:
       - ./data:/app/data
       - ./database:/app/database
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3010
     # You can override the port by changing the PORT environment variable
     # - PORT=8080
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3010/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
       interval: 30s
       timeout: 10s
       retries: 3

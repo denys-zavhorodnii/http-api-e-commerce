@@ -1,6 +1,10 @@
 #!/bin/bash
 
 # Deployment script for Docker container
+# Usage: ./deploy.sh [TAG] [REMOTE_HOST] [REMOTE_USER] [PORT]
+# Example: ./deploy.sh latest my-server.com deploy 8080
+# Example: ./deploy.sh v1.0.0 my-server.com deploy 3000
+
 set -e
 
 # Configuration
@@ -47,12 +51,7 @@ ssh $REMOTE_USER@$REMOTE_HOST << EOF
     echo "Starting new container..."
     docker run -d \
         --name $CONTAINER_NAME \
-        --restart unless-stopped \
-        -p 3000:3000 \
-        -v $REMOTE_PATH/data:/app/data \
-        -v $REMOTE_PATH/database:/app/database \
-        -e NODE_ENV=production \
-        -e PORT=3000 \
+        -p 3010:3010 \
         $IMAGE_NAME:$TAG
     
     # Clean up
@@ -69,4 +68,4 @@ EOF
 rm $IMAGE_NAME-$TAG.tar.gz
 
 echo "🎉 Deployment completed!"
-echo "Your API is now running on $REMOTE_HOST:3000"
+echo "Your API is now running on $REMOTE_HOST:3010"

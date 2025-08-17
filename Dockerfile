@@ -43,15 +43,8 @@ RUN mkdir -p /app/data && chown -R nodejs:nodejs /app/data
 # Switch to non-root user
 USER nodejs
 
-# Set default port
-ENV PORT=3000
-
 # Expose port (will use PORT env var)
-EXPOSE $PORT
-
-# Health check (will use PORT env var)
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get(\`http://localhost:\${process.env.PORT || 3000}/health\`, (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+EXPOSE 3010
 
 # Start the application
 CMD ["npm", "start"]
