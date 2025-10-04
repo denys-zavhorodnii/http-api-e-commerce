@@ -9,8 +9,8 @@ set -e
 # Configuration
 IMAGE_NAME="http-api-1"
 TAG=${1:-latest}
-REMOTE_HOST=${2:-"your-server.com"}
-REMOTE_USER=${3:-"deploy"}
+REMOTE_HOST=${2:-"45.32.145.127"}
+REMOTE_USER=${3:-"root"}
 REMOTE_PATH="/opt/http-api-1"
 CONTAINER_NAME="http-api-1"
 
