@@ -5,7 +5,7 @@ Complete API documentation for the E-commerce HTTP API built with Fastify and Ty
 ## Base URL
 
 ```
-http://localhost:3010
+https://http-api-1.zavhorodnii.org/
 ```
 
 > **Note**: The port can be configured via the `PORT` environment variable. Default is 3010.
@@ -14,6 +14,7 @@ http://localhost:3010
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Health Check Endpoints](#health-check-endpoints)
 - [Product Endpoints](#product-endpoints)
 - [Category Endpoints](#category-endpoints)
@@ -25,6 +26,38 @@ http://localhost:3010
 - [Utility Endpoints](#utility-endpoints)
 - [Common Response Patterns](#common-response-patterns)
 - [Error Handling](#error-handling)
+
+---
+
+## Documentation
+
+### GET /doc
+
+View this API documentation rendered as a beautiful HTML page in your browser.
+
+**Query Parameters**: None
+
+**Response**: HTML page with full API documentation
+
+**Example**:
+```bash
+# Open in browser
+open http://localhost:3010/doc
+
+# Or use curl
+curl http://localhost:3010/doc
+```
+
+**Features**:
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Syntax Highlighting**: Code blocks with proper formatting
+- **Table of Contents**: Easy navigation with anchor links
+- **Smooth Scrolling**: Click links to jump to sections
+- **"Back to Top" Button**: Quick navigation to the top
+- **Styled Tables**: Easy-to-read parameter and response tables
+- **Color-Coded Status Codes**: Visual distinction for HTTP status codes
+
+> **Tip**: This is the best way to explore the API! Open http://localhost:3010/doc in your browser for an interactive experience.
 
 ---
 

@@ -61,9 +61,26 @@ This API is perfect for teaching students about:
    npm run dev
    ```
 
-The API will be available at `http://localhost:3000`
+The API will be available at `https://http-api-1.zavhorodnii.org/`
+
+## 📖 API Documentation
+
+**View the full interactive documentation**: Open `http://localhost:3010/doc` in your browser!
+
+The `/doc` endpoint renders a beautiful HTML page with complete API documentation, including:
+- All endpoints with detailed descriptions
+- Query parameters and path parameters
+- Request/response examples
+- Error handling
+- Usage examples in multiple languages (cURL, JavaScript, Python)
+- Responsive design for mobile and desktop
+
+Alternatively, you can read the [schema.md](./schema.md) file for the complete API specification.
 
 ## 📖 API Endpoints
+
+### Documentation
+- `GET /doc` - View interactive HTML documentation
 
 ### Health Checks
 - `GET /health` - Basic health check
