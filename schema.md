@@ -42,10 +42,10 @@ View this API documentation rendered as a beautiful HTML page in your browser.
 **Example**:
 ```bash
 # Open in browser
-open http://localhost:3010/doc
+open https://http-api-1.zavhorodnii.org/doc
 
 # Or use curl
-curl http://localhost:3010/doc
+curl https://http-api-1.zavhorodnii.org/doc
 ```
 
 **Features**:
@@ -57,7 +57,7 @@ curl http://localhost:3010/doc
 - **Styled Tables**: Easy-to-read parameter and response tables
 - **Color-Coded Status Codes**: Visual distinction for HTTP status codes
 
-> **Tip**: This is the best way to explore the API! Open http://localhost:3010/doc in your browser for an interactive experience.
+> **Tip**: This is the best way to explore the API! Open https://http-api-1.zavhorodnii.org/doc in your browser for an interactive experience.
 
 ---
 
@@ -79,7 +79,7 @@ Basic health check to verify the API is running.
 
 **Example**:
 ```bash
-curl http://localhost:3010/health
+curl https://http-api-1.zavhorodnii.org/health
 ```
 
 ---
@@ -112,7 +112,7 @@ Database health check to verify database connectivity and get product count.
 
 **Example**:
 ```bash
-curl http://localhost:3010/health/db
+curl https://http-api-1.zavhorodnii.org/health/db
 ```
 
 ---
@@ -161,10 +161,10 @@ Get all products with pagination.
 **Example**:
 ```bash
 # Get first page with 10 items
-curl "http://localhost:3010/api/products?page=1&limit=10"
+curl "https://http-api-1.zavhorodnii.org/api/products?page=1&limit=10"
 
 # Get second page with 20 items
-curl "http://localhost:3010/api/products?page=2&limit=20"
+curl "https://http-api-1.zavhorodnii.org/api/products?page=2&limit=20"
 ```
 
 ---
@@ -205,10 +205,10 @@ Get a single product by ID.
 **Example**:
 ```bash
 # Get product with ID 1
-curl http://localhost:3010/api/products/1
+curl https://http-api-1.zavhorodnii.org/api/products/1
 
 # Get product with ID 25
-curl http://localhost:3010/api/products/25
+curl https://http-api-1.zavhorodnii.org/api/products/25
 ```
 
 ---
@@ -277,7 +277,7 @@ Get a product with all related data (brand, supplier, categories, images).
 **Example**:
 ```bash
 # Get full product details for product ID 1
-curl http://localhost:3010/api/products/1/full
+curl https://http-api-1.zavhorodnii.org/api/products/1/full
 ```
 
 ---
@@ -331,25 +331,25 @@ Search and filter products with advanced options.
 **Examples**:
 ```bash
 # Search products with text query
-curl "http://localhost:3010/api/products/search?search=laptop"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?search=laptop"
 
 # Filter by category
-curl "http://localhost:3010/api/products/search?category_id=2"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?category_id=2"
 
 # Filter by price range
-curl "http://localhost:3010/api/products/search?min_price=100&max_price=500"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?min_price=100&max_price=500"
 
 # Filter by brand and stock
-curl "http://localhost:3010/api/products/search?brand_id=1&in_stock=true"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?brand_id=1&in_stock=true"
 
 # Complex search with multiple filters
-curl "http://localhost:3010/api/products/search?category_id=1&min_price=200&max_price=1000&in_stock=true&sort_by=price&sort_order=asc"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?category_id=1&min_price=200&max_price=1000&in_stock=true&sort_by=price&sort_order=asc"
 
 # Featured products only
-curl "http://localhost:3010/api/products/search?is_featured=true"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?is_featured=true"
 
 # Search and sort by rating
-curl "http://localhost:3010/api/products/search?search=wireless&sort_by=rating&sort_order=desc"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?search=wireless&sort_by=rating&sort_order=desc"
 ```
 
 ---
@@ -382,10 +382,10 @@ Get featured products (limited list of highlighted items).
 **Example**:
 ```bash
 # Get 5 featured products
-curl "http://localhost:3010/api/products/featured?limit=5"
+curl "https://http-api-1.zavhorodnii.org/api/products/featured?limit=5"
 
 # Get all featured products (default 10)
-curl http://localhost:3010/api/products/featured
+curl https://http-api-1.zavhorodnii.org/api/products/featured
 ```
 
 ---
@@ -432,10 +432,10 @@ Get reviews for a specific product with pagination.
 **Example**:
 ```bash
 # Get reviews for product 1
-curl "http://localhost:3010/api/products/1/reviews?page=1&limit=10"
+curl "https://http-api-1.zavhorodnii.org/api/products/1/reviews?page=1&limit=10"
 
 # Get second page of reviews
-curl "http://localhost:3010/api/products/1/reviews?page=2&limit=5"
+curl "https://http-api-1.zavhorodnii.org/api/products/1/reviews?page=2&limit=5"
 ```
 
 ---
@@ -473,7 +473,7 @@ Get all categories (flat list).
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/categories
+curl https://http-api-1.zavhorodnii.org/api/categories
 ```
 
 ---
@@ -505,7 +505,7 @@ Get a single category by ID.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/categories/1
+curl https://http-api-1.zavhorodnii.org/api/categories/1
 ```
 
 ---
@@ -549,7 +549,7 @@ Get a category with all its subcategories (hierarchical structure).
 **Example**:
 ```bash
 # Get category tree for Electronics
-curl http://localhost:3010/api/categories/1/children
+curl https://http-api-1.zavhorodnii.org/api/categories/1/children
 ```
 
 ---
@@ -592,7 +592,7 @@ Get all products in a specific category with pagination.
 **Example**:
 ```bash
 # Get products in category 1
-curl "http://localhost:3010/api/categories/1/products?page=1&limit=10"
+curl "https://http-api-1.zavhorodnii.org/api/categories/1/products?page=1&limit=10"
 ```
 
 ---
@@ -623,7 +623,7 @@ Get all brands.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/brands
+curl https://http-api-1.zavhorodnii.org/api/brands
 ```
 
 ---
@@ -655,7 +655,7 @@ Get a single brand by ID.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/brands/1
+curl https://http-api-1.zavhorodnii.org/api/brands/1
 ```
 
 ---
@@ -687,7 +687,7 @@ Get all suppliers.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/suppliers
+curl https://http-api-1.zavhorodnii.org/api/suppliers
 ```
 
 ---
@@ -720,7 +720,7 @@ Get a single supplier by ID.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/suppliers/1
+curl https://http-api-1.zavhorodnii.org/api/suppliers/1
 ```
 
 ---
@@ -766,7 +766,7 @@ Get all users with pagination.
 
 **Example**:
 ```bash
-curl "http://localhost:3010/api/users?page=1&limit=10"
+curl "https://http-api-1.zavhorodnii.org/api/users?page=1&limit=10"
 ```
 
 ---
@@ -804,7 +804,7 @@ Get a single user by ID.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/users/1
+curl https://http-api-1.zavhorodnii.org/api/users/1
 ```
 
 ---
@@ -850,7 +850,7 @@ Get all orders for a specific user with pagination.
 **Example**:
 ```bash
 # Get orders for user 1
-curl "http://localhost:3010/api/users/1/orders?page=1&limit=10"
+curl "https://http-api-1.zavhorodnii.org/api/users/1/orders?page=1&limit=10"
 ```
 
 ---
@@ -896,7 +896,7 @@ Get order details with all order items.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/orders/1
+curl https://http-api-1.zavhorodnii.org/api/orders/1
 ```
 
 ---
@@ -919,7 +919,7 @@ Simple test endpoint returning a greeting message.
 
 **Example**:
 ```bash
-curl http://localhost:3010/api/hello
+curl https://http-api-1.zavhorodnii.org/api/hello
 ```
 
 ---
@@ -943,7 +943,7 @@ Echo endpoint that returns the request body.
 
 **Example**:
 ```bash
-curl -X POST http://localhost:3010/api/echo \
+curl -X POST https://http-api-1.zavhorodnii.org/api/echo \
   -H "Content-Type: application/json" \
   -d '{"test": "hello world"}'
 ```
@@ -1035,16 +1035,16 @@ All errors follow this format:
 
 ```javascript
 // Get all products
-const response = await fetch('http://localhost:3010/api/products?page=1&limit=10');
+const response = await fetch('https://http-api-1.zavhorodnii.org/api/products?page=1&limit=10');
 const data = await response.json();
 console.log(data.products);
 
 // Search products
-const searchResponse = await fetch('http://localhost:3010/api/products/search?search=laptop&min_price=500');
+const searchResponse = await fetch('https://http-api-1.zavhorodnii.org/api/products/search?search=laptop&min_price=500');
 const searchData = await searchResponse.json();
 
 // Get product with full details
-const productResponse = await fetch('http://localhost:3010/api/products/1/full');
+const productResponse = await fetch('https://http-api-1.zavhorodnii.org/api/products/1/full');
 const product = await productResponse.json();
 ```
 
@@ -1054,7 +1054,7 @@ const product = await productResponse.json();
 import requests
 
 # Get all products
-response = requests.get('http://localhost:3010/api/products', params={'page': 1, 'limit': 10})
+response = requests.get('https://http-api-1.zavhorodnii.org/api/products', params={'page': 1, 'limit': 10})
 data = response.json()
 print(data['products'])
 
@@ -1065,11 +1065,11 @@ search_params = {
     'max_price': 2000,
     'in_stock': True
 }
-response = requests.get('http://localhost:3010/api/products/search', params=search_params)
+response = requests.get('https://http-api-1.zavhorodnii.org/api/products/search', params=search_params)
 products = response.json()
 
 # Get product by ID
-response = requests.get('http://localhost:3010/api/products/1')
+response = requests.get('https://http-api-1.zavhorodnii.org/api/products/1')
 product = response.json()
 ```
 
@@ -1077,19 +1077,19 @@ product = response.json()
 
 ```bash
 # Get products with pagination
-curl "http://localhost:3010/api/products?page=1&limit=5"
+curl "https://http-api-1.zavhorodnii.org/api/products?page=1&limit=5"
 
 # Search with filters
-curl "http://localhost:3010/api/products/search?category_id=1&min_price=100&max_price=500&sort_by=price&sort_order=asc"
+curl "https://http-api-1.zavhorodnii.org/api/products/search?category_id=1&min_price=100&max_price=500&sort_by=price&sort_order=asc"
 
 # Get product with full relations
-curl http://localhost:3010/api/products/1/full
+curl https://http-api-1.zavhorodnii.org/api/products/1/full
 
 # Get user orders
-curl "http://localhost:3010/api/users/1/orders?page=1&limit=10"
+curl "https://http-api-1.zavhorodnii.org/api/users/1/orders?page=1&limit=10"
 
 # POST request
-curl -X POST http://localhost:3010/api/echo \
+curl -X POST https://http-api-1.zavhorodnii.org/api/echo \
   -H "Content-Type: application/json" \
   -d '{"message": "test"}'
 ```
