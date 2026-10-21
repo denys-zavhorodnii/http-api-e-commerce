@@ -2,6 +2,8 @@
 
 Complete API documentation for the E-commerce HTTP API built with Fastify and TypeScript.
 
+All example responses below are taken from real API output, so field names and value types match what the server actually returns.
+
 ## Base URL
 
 ```
@@ -14,6 +16,7 @@ https://http-api-1.zavhorodnii.org/
 
 ## Table of Contents
 
+- [Conventions](#conventions)
 - [Documentation](#documentation)
 - [Health Check Endpoints](#health-check-endpoints)
 - [Product Endpoints](#product-endpoints)
@@ -29,11 +32,23 @@ https://http-api-1.zavhorodnii.org/
 
 ---
 
+## Conventions
+
+A few things that apply to every endpoint:
+
+- **Booleans are `1` / `0`, not `true` / `false`.** The data is stored in SQLite, which has no boolean type. Fields such as `is_active`, `is_featured`, `is_primary`, `is_verified_purchase` and `is_approved` are returned as the numbers `1` and `0`. Compare with `=== 1` or just use truthiness.
+- **Dates are strings in `YYYY-MM-DD HH:MM:SS` format (UTC)**, e.g. `"2026-10-04 16:26:14"`. Health endpoints are the exception: they return ISO 8601 timestamps.
+- **Paginated lists live in `data`.** See [Pagination Response](#pagination-response).
+- **Non-paginated lists are keyed by resource name** (`products`, `categories`, `brands`, `suppliers`) plus a `count`.
+- **Optional fields can be `null`** (for example `sale_price`, `parent_id`, `shipping_country`, `notes`).
+
+---
+
 ## Documentation
 
 ### GET /doc
 
-View this API documentation rendered as a beautiful HTML page in your browser.
+View this API documentation rendered as an HTML page in your browser.
 
 **Query Parameters**: None
 
@@ -47,17 +62,6 @@ open https://http-api-1.zavhorodnii.org/doc
 # Or use curl
 curl https://http-api-1.zavhorodnii.org/doc
 ```
-
-**Features**:
-- **Responsive Design**: Works on desktop, tablet, and mobile
-- **Syntax Highlighting**: Code blocks with proper formatting
-- **Table of Contents**: Easy navigation with anchor links
-- **Smooth Scrolling**: Click links to jump to sections
-- **"Back to Top" Button**: Quick navigation to the top
-- **Styled Tables**: Easy-to-read parameter and response tables
-- **Color-Coded Status Codes**: Visual distinction for HTTP status codes
-
-> **Tip**: This is the best way to explore the API! Open https://http-api-1.zavhorodnii.org/doc in your browser for an interactive experience.
 
 ---
 
@@ -73,7 +77,7 @@ Basic health check to verify the API is running.
 ```json
 {
   "status": "ok",
-  "timestamp": "2025-10-12T10:30:00.000Z"
+  "timestamp": "2026-10-21T20:02:45.998Z"
 }
 ```
 
@@ -95,8 +99,8 @@ Database health check to verify database connectivity and get product count.
 {
   "status": "ok",
   "database": "connected",
-  "products_count": 45,
-  "timestamp": "2025-10-12T10:30:00.000Z"
+  "products_count": 61,
+  "timestamp": "2026-10-21T20:02:45.998Z"
 }
 ```
 
@@ -106,7 +110,7 @@ Database health check to verify database connectivity and get product count.
   "status": "error",
   "database": "disconnected",
   "error": "Connection failed",
-  "timestamp": "2025-10-12T10:30:00.000Z"
+  "timestamp": "2026-10-21T20:02:45.998Z"
 }
 ```
 
@@ -118,6 +122,36 @@ curl https://http-api-1.zavhorodnii.org/health/db
 ---
 
 ## Product Endpoints
+
+### Product object
+
+Every product endpoint returns objects with these fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Product ID |
+| `name` | string | Product name |
+| `description` | string \| null | Product description |
+| `sku` | string | Stock keeping unit (unique) |
+| `price` | number | Regular price |
+| `sale_price` | number \| null | Discounted price, `null` when the product is not on sale |
+| `cost_price` | number \| null | Purchase cost |
+| `brand_id` | number \| null | Brand ID (see `/api/brands/:id`) |
+| `supplier_id` | number \| null | Supplier ID (see `/api/suppliers/:id`) |
+| `stock_quantity` | number | Units in stock |
+| `min_stock_level` | number | Reorder threshold |
+| `weight` | number \| null | Weight |
+| `dimensions` | string \| null | Dimensions as free text, e.g. `"14x9.5x0.7"` |
+| `is_active` | `1` \| `0` | Only active products are returned by the API |
+| `is_featured` | `1` \| `0` | Featured flag |
+| `rating_average` | number | Average review rating, 0–5 |
+| `rating_count` | number | Number of ratings |
+| `created_at` | string | `YYYY-MM-DD HH:MM:SS` |
+| `updated_at` | string | `YYYY-MM-DD HH:MM:SS` |
+
+> There is **no `category_id`** on a product: a product can belong to several categories (many-to-many). Use `/api/products/:id/full` to get a product's categories, or `/api/categories/:id/products` to list products of a category.
+
+---
 
 ### GET /api/products
 
@@ -132,28 +166,36 @@ Get all products with pagination.
 **Response**: `200 OK`
 ```json
 {
-  "products": [
+  "data": [
     {
       "id": 1,
-      "name": "Premium Wireless Headphones",
-      "description": "High-quality noise-cancelling headphones",
-      "price": 299.99,
-      "stock_quantity": 50,
-      "category_id": 3,
+      "name": "TechPro Laptop Pro",
+      "description": "High-performance laptop with 16GB RAM and 512GB SSD",
+      "sku": "TP-LP-001",
+      "price": 1299.99,
+      "sale_price": 1199.99,
+      "cost_price": 800,
       "brand_id": 1,
       "supplier_id": 1,
-      "sku": "WH-1000XM4",
-      "rating": 4.8,
-      "is_featured": true,
-      "created_at": "2025-01-15T10:00:00.000Z",
-      "updated_at": "2025-01-15T10:00:00.000Z"
+      "stock_quantity": 25,
+      "min_stock_level": 5,
+      "weight": 4.5,
+      "dimensions": "14x9.5x0.7",
+      "is_active": 1,
+      "is_featured": 1,
+      "rating_average": 4.6,
+      "rating_count": 128,
+      "created_at": "2026-10-04 16:26:14",
+      "updated_at": "2026-10-04 16:26:14"
     }
   ],
   "pagination": {
     "page": 1,
-    "limit": 10,
-    "total": 45,
-    "total_pages": 5
+    "limit": 1,
+    "total": 61,
+    "totalPages": 61,
+    "hasNext": true,
+    "hasPrev": false
   }
 }
 ```
@@ -182,18 +224,24 @@ Get a single product by ID.
 ```json
 {
   "id": 1,
-  "name": "Premium Wireless Headphones",
-  "description": "High-quality noise-cancelling headphones",
-  "price": 299.99,
-  "stock_quantity": 50,
-  "category_id": 3,
+  "name": "TechPro Laptop Pro",
+  "description": "High-performance laptop with 16GB RAM and 512GB SSD",
+  "sku": "TP-LP-001",
+  "price": 1299.99,
+  "sale_price": 1199.99,
+  "cost_price": 800,
   "brand_id": 1,
   "supplier_id": 1,
-  "sku": "WH-1000XM4",
-  "rating": 4.8,
-  "is_featured": true,
-  "created_at": "2025-01-15T10:00:00.000Z",
-  "updated_at": "2025-01-15T10:00:00.000Z"
+  "stock_quantity": 25,
+  "min_stock_level": 5,
+  "weight": 4.5,
+  "dimensions": "14x9.5x0.7",
+  "is_active": 1,
+  "is_featured": 1,
+  "rating_average": 4.6,
+  "rating_count": 128,
+  "created_at": "2026-10-04 16:26:14",
+  "updated_at": "2026-10-04 16:26:14"
 }
 ```
 
@@ -215,7 +263,7 @@ curl https://http-api-1.zavhorodnii.org/api/products/25
 
 ### GET /api/products/:id/full
 
-Get a product with all related data (brand, supplier, categories, images).
+Get a product with all related data: `brand`, `supplier`, `categories` and `images` are added to the [product object](#product-object).
 
 **Path Parameters**:
 | Parameter | Type | Required | Description |
@@ -226,48 +274,94 @@ Get a product with all related data (brand, supplier, categories, images).
 ```json
 {
   "id": 1,
-  "name": "Premium Wireless Headphones",
-  "description": "High-quality noise-cancelling headphones",
-  "price": 299.99,
-  "stock_quantity": 50,
-  "sku": "WH-1000XM4",
-  "rating": 4.8,
-  "is_featured": true,
+  "name": "TechPro Laptop Pro",
+  "description": "High-performance laptop with 16GB RAM and 512GB SSD",
+  "sku": "TP-LP-001",
+  "price": 1299.99,
+  "sale_price": 1199.99,
+  "cost_price": 800,
+  "brand_id": 1,
+  "supplier_id": 1,
+  "stock_quantity": 25,
+  "min_stock_level": 5,
+  "weight": 4.5,
+  "dimensions": "14x9.5x0.7",
+  "is_active": 1,
+  "is_featured": 1,
+  "rating_average": 4.6,
+  "rating_count": 128,
+  "created_at": "2026-10-04 16:26:14",
+  "updated_at": "2026-10-04 16:26:14",
   "brand": {
     "id": 1,
     "name": "TechPro",
-    "description": "Premium technology brand",
-    "website": "https://techpro.example.com"
+    "description": "Professional grade technology solutions",
+    "logo_url": "https://placehold.co/200x200?text=techpro",
+    "website": "https://techpro.com",
+    "is_active": 1,
+    "created_at": "2026-10-04 16:26:14"
   },
   "supplier": {
     "id": 1,
-    "name": "Global Electronics Supply Co.",
-    "contact_name": "John Smith",
-    "email": "john@globalsupply.com",
-    "phone": "+1-555-0100",
-    "address": "123 Industrial Park, Tech City, TC 12345"
+    "name": "TechSupply Co",
+    "contact_person": "Mike Johnson",
+    "email": "mike@techsupply.com",
+    "phone": "555-1001",
+    "address": "100 Industrial Blvd",
+    "city": "Austin",
+    "state": "TX",
+    "zip_code": "73301",
+    "country": "USA",
+    "is_active": 1,
+    "created_at": "2026-10-04 16:26:14"
   },
   "categories": [
     {
-      "id": 3,
-      "name": "Audio Equipment",
-      "description": "High-quality audio devices",
-      "parent_id": 1
+      "id": 2,
+      "name": "Computers",
+      "description": "Desktop and laptop computers",
+      "parent_id": 1,
+      "image_url": "https://picsum.photos/seed/computers/600/400",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
+    },
+    {
+      "id": 1,
+      "name": "Electronics",
+      "description": "Electronic devices and components",
+      "parent_id": null,
+      "image_url": "https://picsum.photos/seed/electronics/600/400",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
     }
   ],
   "images": [
     {
       "id": 1,
-      "image_url": "https://example.com/images/headphones-1.jpg",
-      "alt_text": "Premium Wireless Headphones",
-      "is_primary": true,
-      "display_order": 1
+      "product_id": 1,
+      "image_url": "https://picsum.photos/seed/laptop-pro-1/800/600",
+      "alt_text": "TechPro Laptop Pro Front View",
+      "is_primary": 1,
+      "sort_order": 1,
+      "created_at": "2026-10-04 16:26:14"
+    },
+    {
+      "id": 2,
+      "product_id": 1,
+      "image_url": "https://picsum.photos/seed/laptop-pro-2/800/600",
+      "alt_text": "TechPro Laptop Pro Side View",
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-10-04 16:26:14"
     }
-  ],
-  "created_at": "2025-01-15T10:00:00.000Z",
-  "updated_at": "2025-01-15T10:00:00.000Z"
+  ]
 }
 ```
+
+Notes:
+- `brand` and `supplier` are omitted when the product has no `brand_id` / `supplier_id`.
+- `images` are ordered by `is_primary` (primary first), then `sort_order`, then `id`.
+- Image URLs are placeholder pictures and can be opened directly in a browser or `<img>` tag.
 
 **Error Responses**:
 - `400 Bad Request`: Invalid product ID
@@ -293,37 +387,47 @@ Search and filter products with advanced options.
 | `limit` | number | 10 | Items per page |
 | `category_id` | number | - | Filter by category ID |
 | `brand_id` | number | - | Filter by brand ID |
-| `min_price` | number | - | Minimum price filter |
-| `max_price` | number | - | Maximum price filter |
-| `in_stock` | boolean | - | Filter by stock availability (true/false) |
-| `is_featured` | boolean | - | Filter featured products (true/false) |
-| `search` | string | - | Search in product name and description |
-| `sort_by` | string | - | Sort field: `price`, `rating`, `name`, `created_at` |
-| `sort_order` | string | `asc` | Sort order: `asc` or `desc` |
+| `min_price` | number | - | Minimum price filter (inclusive) |
+| `max_price` | number | - | Maximum price filter (inclusive) |
+| `in_stock` | boolean | - | `true` returns only products with `stock_quantity > 0`. Any other value is ignored |
+| `is_featured` | boolean | - | `true` returns only featured products. Any other value is ignored |
+| `search` | string | - | Case-insensitive substring search in product name and description |
+| `sort_by` | string | `created_at` | Sort field: `price`, `rating`, `name`, `created_at` (`rating` sorts by `rating_average`). Unknown values fall back to `created_at` |
+| `sort_order` | string | `desc` | Sort order: `asc` or `desc` |
 
-**Response**: `200 OK`
+**Response**: `200 OK` (same shape as `GET /api/products`)
 ```json
 {
-  "products": [
+  "data": [
     {
-      "id": 5,
-      "name": "Gaming Laptop Pro",
-      "description": "High-performance gaming laptop",
+      "id": 1,
+      "name": "TechPro Laptop Pro",
+      "description": "High-performance laptop with 16GB RAM and 512GB SSD",
+      "sku": "TP-LP-001",
       "price": 1299.99,
-      "stock_quantity": 15,
-      "category_id": 2,
+      "sale_price": 1199.99,
+      "cost_price": 800,
       "brand_id": 1,
       "supplier_id": 1,
-      "sku": "GLT-PRO-2024",
-      "rating": 4.7,
-      "is_featured": true
+      "stock_quantity": 25,
+      "min_stock_level": 5,
+      "weight": 4.5,
+      "dimensions": "14x9.5x0.7",
+      "is_active": 1,
+      "is_featured": 1,
+      "rating_average": 4.6,
+      "rating_count": 128,
+      "created_at": "2026-10-04 16:26:14",
+      "updated_at": "2026-10-04 16:26:14"
     }
   ],
   "pagination": {
     "page": 1,
     "limit": 10,
-    "total": 8,
-    "total_pages": 1
+    "total": 1,
+    "totalPages": 1,
+    "hasNext": false,
+    "hasPrev": false
   }
 }
 ```
@@ -356,7 +460,7 @@ curl "https://http-api-1.zavhorodnii.org/api/products/search?search=wireless&sor
 
 ### GET /api/products/featured
 
-Get featured products (limited list of highlighted items).
+Get featured products ordered by `rating_average` (highest first). Not paginated.
 
 **Query Parameters**:
 | Parameter | Type | Default | Description |
@@ -368,14 +472,28 @@ Get featured products (limited list of highlighted items).
 {
   "products": [
     {
-      "id": 1,
-      "name": "Premium Wireless Headphones",
+      "id": 58,
+      "name": "Ergonomic Office Chair",
+      "description": "Adjustable office chair with lumbar support",
+      "sku": "EO-OC-001",
       "price": 299.99,
-      "rating": 4.8,
-      "is_featured": true
+      "sale_price": 279.99,
+      "cost_price": 180,
+      "brand_id": 23,
+      "supplier_id": 23,
+      "stock_quantity": 35,
+      "min_stock_level": 7,
+      "weight": 25,
+      "dimensions": "28x24x42",
+      "is_active": 1,
+      "is_featured": 1,
+      "rating_average": 4.8,
+      "rating_count": 67,
+      "created_at": "2026-10-04 16:26:14",
+      "updated_at": "2026-10-04 16:26:14"
     }
   ],
-  "count": 5
+  "count": 1
 }
 ```
 
@@ -392,7 +510,7 @@ curl https://http-api-1.zavhorodnii.org/api/products/featured
 
 ### GET /api/products/:id/reviews
 
-Get reviews for a specific product with pagination.
+Get approved reviews for a specific product with pagination. Each review also carries the reviewer's `username`, `first_name` and `last_name`.
 
 **Path Parameters**:
 | Parameter | Type | Required | Description |
@@ -408,26 +526,34 @@ Get reviews for a specific product with pagination.
 **Response**: `200 OK`
 ```json
 {
-  "reviews": [
+  "data": [
     {
       "id": 1,
       "product_id": 1,
       "user_id": 1,
       "rating": 5,
-      "title": "Amazing sound quality!",
-      "comment": "Best headphones I've ever owned. The noise cancellation is incredible.",
-      "is_verified_purchase": true,
-      "created_at": "2025-02-01T14:30:00.000Z"
+      "title": "Excellent laptop!",
+      "comment": "This laptop exceeded my expectations. Fast performance and great build quality.",
+      "is_verified_purchase": 1,
+      "is_approved": 1,
+      "created_at": "2026-10-04 16:26:14",
+      "username": "john_doe",
+      "first_name": "John",
+      "last_name": "Doe"
     }
   ],
   "pagination": {
     "page": 1,
     "limit": 10,
-    "total": 15,
-    "total_pages": 2
+    "total": 2,
+    "totalPages": 1,
+    "hasNext": false,
+    "hasPrev": false
   }
 }
 ```
+
+> An unknown product ID returns `200` with an empty `data` array, not `404`.
 
 **Example**:
 ```bash
@@ -442,9 +568,21 @@ curl "https://http-api-1.zavhorodnii.org/api/products/1/reviews?page=2&limit=5"
 
 ## Category Endpoints
 
+### Category object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Category ID |
+| `name` | string | Category name |
+| `description` | string \| null | Description |
+| `parent_id` | number \| null | Parent category ID, `null` for top-level categories |
+| `image_url` | string \| null | Category picture |
+| `is_active` | `1` \| `0` | Only active categories are returned |
+| `created_at` | string | `YYYY-MM-DD HH:MM:SS` |
+
 ### GET /api/categories
 
-Get all categories (flat list).
+Get all categories as a flat list, sorted by name. Not paginated.
 
 **Query Parameters**: None
 
@@ -453,18 +591,22 @@ Get all categories (flat list).
 {
   "categories": [
     {
-      "id": 1,
-      "name": "Electronics",
-      "description": "Electronic devices and gadgets",
-      "parent_id": null,
-      "slug": "electronics"
+      "id": 5,
+      "name": "Audio",
+      "description": "Audio equipment and accessories",
+      "parent_id": 1,
+      "image_url": "https://picsum.photos/seed/audio/600/400",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
     },
     {
-      "id": 2,
-      "name": "Computers",
-      "description": "Desktop and laptop computers",
-      "parent_id": 1,
-      "slug": "computers"
+      "id": 20,
+      "name": "Automotive",
+      "description": "Automotive accessories and equipment",
+      "parent_id": null,
+      "image_url": "https://picsum.photos/seed/automotive/600/400",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
     }
   ],
   "count": 23
@@ -492,9 +634,11 @@ Get a single category by ID.
 {
   "id": 1,
   "name": "Electronics",
-  "description": "Electronic devices and gadgets",
+  "description": "Electronic devices and components",
   "parent_id": null,
-  "slug": "electronics"
+  "image_url": "https://picsum.photos/seed/electronics/600/400",
+  "is_active": 1,
+  "created_at": "2026-10-04 16:26:14"
 }
 ```
 
@@ -512,7 +656,7 @@ curl https://http-api-1.zavhorodnii.org/api/categories/1
 
 ### GET /api/categories/:id/children
 
-Get a category with all its subcategories (hierarchical structure).
+Get a category together with its direct subcategories (one level deep, sorted by name).
 
 **Path Parameters**:
 | Parameter | Type | Required | Description |
@@ -524,27 +668,37 @@ Get a category with all its subcategories (hierarchical structure).
 {
   "id": 1,
   "name": "Electronics",
-  "description": "Electronic devices and gadgets",
+  "description": "Electronic devices and components",
   "parent_id": null,
-  "slug": "electronics",
+  "image_url": "https://picsum.photos/seed/electronics/600/400",
+  "is_active": 1,
+  "created_at": "2026-10-04 16:26:14",
   "children": [
+    {
+      "id": 5,
+      "name": "Audio",
+      "description": "Audio equipment and accessories",
+      "parent_id": 1,
+      "image_url": "https://picsum.photos/seed/audio/600/400",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
+    },
     {
       "id": 2,
       "name": "Computers",
       "description": "Desktop and laptop computers",
       "parent_id": 1,
-      "slug": "computers"
-    },
-    {
-      "id": 3,
-      "name": "Audio Equipment",
-      "description": "Headphones, speakers, and audio devices",
-      "parent_id": 1,
-      "slug": "audio-equipment"
+      "image_url": "https://picsum.photos/seed/computers/600/400",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
     }
   ]
 }
 ```
+
+**Error Responses**:
+- `400 Bad Request`: Invalid category ID
+- `404 Not Found`: Category not found
 
 **Example**:
 ```bash
@@ -556,7 +710,7 @@ curl https://http-api-1.zavhorodnii.org/api/categories/1/children
 
 ### GET /api/categories/:id/products
 
-Get all products in a specific category with pagination.
+Get all products in a specific category with pagination. Products are full [product objects](#product-object).
 
 **Path Parameters**:
 | Parameter | Type | Required | Description |
@@ -572,27 +726,46 @@ Get all products in a specific category with pagination.
 **Response**: `200 OK`
 ```json
 {
-  "products": [
+  "data": [
     {
       "id": 1,
-      "name": "Premium Wireless Headphones",
-      "price": 299.99,
-      "category_id": 3
+      "name": "TechPro Laptop Pro",
+      "description": "High-performance laptop with 16GB RAM and 512GB SSD",
+      "sku": "TP-LP-001",
+      "price": 1299.99,
+      "sale_price": 1199.99,
+      "cost_price": 800,
+      "brand_id": 1,
+      "supplier_id": 1,
+      "stock_quantity": 25,
+      "min_stock_level": 5,
+      "weight": 4.5,
+      "dimensions": "14x9.5x0.7",
+      "is_active": 1,
+      "is_featured": 1,
+      "rating_average": 4.6,
+      "rating_count": 128,
+      "created_at": "2026-10-04 16:26:14",
+      "updated_at": "2026-10-04 16:26:14"
     }
   ],
   "pagination": {
     "page": 1,
-    "limit": 10,
-    "total": 12,
-    "total_pages": 2
+    "limit": 1,
+    "total": 6,
+    "totalPages": 6,
+    "hasNext": true,
+    "hasPrev": false
   }
 }
 ```
 
+> An unknown category ID returns `200` with an empty `data` array, not `404`.
+
 **Example**:
 ```bash
-# Get products in category 1
-curl "https://http-api-1.zavhorodnii.org/api/categories/1/products?page=1&limit=10"
+# Get products in category 2 (Computers)
+curl "https://http-api-1.zavhorodnii.org/api/categories/2/products?page=1&limit=10"
 ```
 
 ---
@@ -601,7 +774,7 @@ curl "https://http-api-1.zavhorodnii.org/api/categories/1/products?page=1&limit=
 
 ### GET /api/brands
 
-Get all brands.
+Get all brands, sorted by name. Not paginated.
 
 **Query Parameters**: None
 
@@ -610,11 +783,13 @@ Get all brands.
 {
   "brands": [
     {
-      "id": 1,
-      "name": "TechPro",
-      "description": "Premium technology brand",
-      "website": "https://techpro.example.com",
-      "logo_url": "https://example.com/logos/techpro.png"
+      "id": 10,
+      "name": "AutoTech",
+      "description": "Automotive technology and accessories",
+      "logo_url": "https://placehold.co/200x200?text=autotech",
+      "website": "https://autotech.com",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
     }
   ],
   "count": 10
@@ -642,9 +817,11 @@ Get a single brand by ID.
 {
   "id": 1,
   "name": "TechPro",
-  "description": "Premium technology brand specializing in consumer electronics",
-  "website": "https://techpro.example.com",
-  "logo_url": "https://example.com/logos/techpro.png"
+  "description": "Professional grade technology solutions",
+  "logo_url": "https://placehold.co/200x200?text=techpro",
+  "website": "https://techpro.com",
+  "is_active": 1,
+  "created_at": "2026-10-04 16:26:14"
 }
 ```
 
@@ -664,7 +841,7 @@ curl https://http-api-1.zavhorodnii.org/api/brands/1
 
 ### GET /api/suppliers
 
-Get all suppliers.
+Get all suppliers, sorted by name. Not paginated.
 
 **Query Parameters**: None
 
@@ -674,11 +851,17 @@ Get all suppliers.
   "suppliers": [
     {
       "id": 1,
-      "name": "Global Electronics Supply Co.",
-      "contact_name": "John Smith",
-      "email": "john@globalsupply.com",
-      "phone": "+1-555-0100",
-      "address": "123 Industrial Park, Tech City, TC 12345"
+      "name": "TechSupply Co",
+      "contact_person": "Mike Johnson",
+      "email": "mike@techsupply.com",
+      "phone": "555-1001",
+      "address": "100 Industrial Blvd",
+      "city": "Austin",
+      "state": "TX",
+      "zip_code": "73301",
+      "country": "USA",
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14"
     }
   ],
   "count": 10
@@ -705,11 +888,17 @@ Get a single supplier by ID.
 ```json
 {
   "id": 1,
-  "name": "Global Electronics Supply Co.",
-  "contact_name": "John Smith",
-  "email": "john@globalsupply.com",
-  "phone": "+1-555-0100",
-  "address": "123 Industrial Park, Tech City, TC 12345"
+  "name": "TechSupply Co",
+  "contact_person": "Mike Johnson",
+  "email": "mike@techsupply.com",
+  "phone": "555-1001",
+  "address": "100 Industrial Blvd",
+  "city": "Austin",
+  "state": "TX",
+  "zip_code": "73301",
+  "country": "USA",
+  "is_active": 1,
+  "created_at": "2026-10-04 16:26:14"
 }
 ```
 
@@ -729,7 +918,7 @@ curl https://http-api-1.zavhorodnii.org/api/suppliers/1
 
 ### GET /api/users
 
-Get all users with pagination.
+Get all users with pagination (newest first).
 
 **Query Parameters**:
 | Parameter | Type | Default | Description |
@@ -740,26 +929,31 @@ Get all users with pagination.
 **Response**: `200 OK`
 ```json
 {
-  "users": [
+  "data": [
     {
       "id": 1,
-      "email": "john.doe@example.com",
+      "username": "john_doe",
+      "email": "john@example.com",
       "first_name": "John",
       "last_name": "Doe",
-      "phone": "+1-555-0101",
-      "address": "123 Main St, Apt 4B",
+      "phone": "555-0101",
+      "address": "123 Main St",
       "city": "New York",
       "state": "NY",
       "zip_code": "10001",
       "country": "USA",
-      "created_at": "2025-01-01T10:00:00.000Z"
+      "is_active": 1,
+      "created_at": "2026-10-04 16:26:14",
+      "updated_at": "2026-10-04 16:26:14"
     }
   ],
   "pagination": {
     "page": 1,
-    "limit": 10,
+    "limit": 1,
     "total": 10,
-    "total_pages": 1
+    "totalPages": 10,
+    "hasNext": true,
+    "hasPrev": false
   }
 }
 ```
@@ -784,16 +978,19 @@ Get a single user by ID.
 ```json
 {
   "id": 1,
-  "email": "john.doe@example.com",
+  "username": "john_doe",
+  "email": "john@example.com",
   "first_name": "John",
   "last_name": "Doe",
-  "phone": "+1-555-0101",
-  "address": "123 Main St, Apt 4B",
+  "phone": "555-0101",
+  "address": "123 Main St",
   "city": "New York",
   "state": "NY",
   "zip_code": "10001",
   "country": "USA",
-  "created_at": "2025-01-01T10:00:00.000Z"
+  "is_active": 1,
+  "created_at": "2026-10-04 16:26:14",
+  "updated_at": "2026-10-04 16:26:14"
 }
 ```
 
@@ -811,7 +1008,7 @@ curl https://http-api-1.zavhorodnii.org/api/users/1
 
 ### GET /api/users/:id/orders
 
-Get all orders for a specific user with pagination.
+Get all orders for a specific user with pagination (newest first). Order items are not included here; use `GET /api/orders/:id` for them.
 
 **Path Parameters**:
 | Parameter | Type | Required | Description |
@@ -827,25 +1024,40 @@ Get all orders for a specific user with pagination.
 **Response**: `200 OK`
 ```json
 {
-  "orders": [
+  "data": [
     {
       "id": 1,
+      "order_number": "ORD-2024-001",
       "user_id": 1,
-      "order_date": "2025-02-15T10:30:00.000Z",
-      "status": "completed",
-      "total_amount": 599.98,
-      "shipping_address": "123 Main St, Apt 4B, New York, NY 10001",
-      "payment_method": "credit_card"
+      "status": "delivered",
+      "subtotal": 1299.99,
+      "tax_amount": 104,
+      "shipping_amount": 15,
+      "total_amount": 1418.99,
+      "shipping_address": "123 Main St",
+      "shipping_city": "New York",
+      "shipping_state": "NY",
+      "shipping_zip_code": "10001",
+      "shipping_country": null,
+      "notes": null,
+      "created_at": "2026-10-04 16:26:14",
+      "updated_at": "2026-10-04 16:26:14"
     }
   ],
   "pagination": {
     "page": 1,
-    "limit": 10,
+    "limit": 1,
     "total": 3,
-    "total_pages": 1
+    "totalPages": 3,
+    "hasNext": true,
+    "hasPrev": false
   }
 }
 ```
+
+`status` is one of `pending`, `processing`, `shipped`, `delivered`, `cancelled`.
+
+> An unknown user ID returns `200` with an empty `data` array, not `404`.
 
 **Example**:
 ```bash
@@ -859,7 +1071,7 @@ curl "https://http-api-1.zavhorodnii.org/api/users/1/orders?page=1&limit=10"
 
 ### GET /api/orders/:id
 
-Get order details with all order items.
+Get order details with the ordering `user` and all order `items`.
 
 **Path Parameters**:
 | Parameter | Type | Required | Description |
@@ -870,24 +1082,54 @@ Get order details with all order items.
 ```json
 {
   "id": 1,
+  "order_number": "ORD-2024-001",
   "user_id": 1,
-  "order_date": "2025-02-15T10:30:00.000Z",
-  "status": "completed",
-  "total_amount": 599.98,
-  "shipping_address": "123 Main St, Apt 4B, New York, NY 10001",
-  "payment_method": "credit_card",
+  "status": "delivered",
+  "subtotal": 1299.99,
+  "tax_amount": 104,
+  "shipping_amount": 15,
+  "total_amount": 1418.99,
+  "shipping_address": "123 Main St",
+  "shipping_city": "New York",
+  "shipping_state": "NY",
+  "shipping_zip_code": "10001",
+  "shipping_country": null,
+  "notes": null,
+  "created_at": "2026-10-04 16:26:14",
+  "updated_at": "2026-10-04 16:26:14",
+  "user": {
+    "id": 1,
+    "username": "john_doe",
+    "email": "john@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "phone": "555-0101",
+    "address": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10001",
+    "country": "USA",
+    "is_active": 1,
+    "created_at": "2026-10-04 16:26:14",
+    "updated_at": "2026-10-04 16:26:14"
+  },
   "items": [
     {
       "id": 1,
       "order_id": 1,
       "product_id": 1,
-      "quantity": 2,
-      "price": 299.99,
-      "subtotal": 599.98
+      "product_name": "TechPro Laptop Pro",
+      "product_sku": "TP-LP-001",
+      "quantity": 1,
+      "unit_price": 1299.99,
+      "total_price": 1299.99,
+      "created_at": "2026-10-04 16:26:14"
     }
   ]
 }
 ```
+
+`product_name`, `product_sku` and `unit_price` are snapshots taken at order time, so they may differ from the current product.
 
 **Error Responses**:
 - `400 Bad Request`: Invalid order ID
@@ -913,7 +1155,7 @@ Simple test endpoint returning a greeting message.
 ```json
 {
   "message": "Hello from E-commerce API!",
-  "timestamp": "2025-10-12T10:30:00.000Z"
+  "timestamp": "2026-10-21T20:02:45.998Z"
 }
 ```
 
@@ -937,7 +1179,7 @@ Echo endpoint that returns the request body.
   "data": {
     "test": "your data here"
   },
-  "timestamp": "2025-10-12T10:30:00.000Z"
+  "timestamp": "2026-10-21T20:02:45.998Z"
 }
 ```
 
@@ -954,28 +1196,32 @@ curl -X POST https://http-api-1.zavhorodnii.org/api/echo \
 
 ### Pagination Response
 
-All paginated endpoints return data in this format:
+All paginated endpoints (`/api/products`, `/api/products/search`, `/api/products/:id/reviews`, `/api/categories/:id/products`, `/api/users`, `/api/users/:id/orders`) return data in this format:
 
 ```json
 {
-  "products": [ /* array of items */ ],
+  "data": [ /* array of items */ ],
   "pagination": {
     "page": 1,          // Current page number
     "limit": 10,        // Items per page
-    "total": 45,        // Total number of items
-    "total_pages": 5    // Total number of pages
+    "total": 61,        // Total number of items
+    "totalPages": 7,    // Total number of pages
+    "hasNext": true,    // Is there a page after this one?
+    "hasPrev": false    // Is there a page before this one?
   }
 }
 ```
 
+`page` and `limit` are always numbers. Values that are missing or not valid positive integers fall back to the defaults (`page=1`, `limit=10`).
+
 ### List Response (Non-paginated)
 
-Endpoints that return lists without pagination:
+Endpoints that return lists without pagination (`/api/products/featured`, `/api/categories`, `/api/brands`, `/api/suppliers`):
 
 ```json
 {
   "brands": [ /* array of items */ ],
-  "count": 10   // Total number of items
+  "count": 10   // Number of items in the array
 }
 ```
 
@@ -1036,16 +1282,18 @@ All errors follow this format:
 ```javascript
 // Get all products
 const response = await fetch('https://http-api-1.zavhorodnii.org/api/products?page=1&limit=10');
-const data = await response.json();
-console.log(data.products);
+const { data, pagination } = await response.json();
+console.log(data, pagination.totalPages);
 
 // Search products
 const searchResponse = await fetch('https://http-api-1.zavhorodnii.org/api/products/search?search=laptop&min_price=500');
 const searchData = await searchResponse.json();
+console.log(searchData.data);
 
 // Get product with full details
 const productResponse = await fetch('https://http-api-1.zavhorodnii.org/api/products/1/full');
 const product = await productResponse.json();
+const primaryImage = product.images.find(img => img.is_primary === 1);
 ```
 
 ### Python (requests)
@@ -1055,18 +1303,18 @@ import requests
 
 # Get all products
 response = requests.get('https://http-api-1.zavhorodnii.org/api/products', params={'page': 1, 'limit': 10})
-data = response.json()
-print(data['products'])
+body = response.json()
+print(body['data'], body['pagination']['totalPages'])
 
 # Search products
 search_params = {
     'search': 'laptop',
     'min_price': 500,
     'max_price': 2000,
-    'in_stock': True
+    'in_stock': 'true'
 }
 response = requests.get('https://http-api-1.zavhorodnii.org/api/products/search', params=search_params)
-products = response.json()
+products = response.json()['data']
 
 # Get product by ID
 response = requests.get('https://http-api-1.zavhorodnii.org/api/products/1')
@@ -1098,13 +1346,14 @@ curl -X POST https://http-api-1.zavhorodnii.org/api/echo \
 
 ## Tips for Using the API
 
-1. **Pagination**: Always use pagination for large datasets. Default is 10 items per page.
+1. **Pagination**: Always use pagination for large datasets. Default is 10 items per page. Use `hasNext` / `hasPrev` to drive "next" / "previous" buttons.
 2. **Filtering**: Combine multiple filters for precise results (category + price range + stock status).
 3. **Sorting**: Use `sort_by` and `sort_order` parameters for custom ordering.
 4. **Full Product Data**: Use `/api/products/:id/full` to get all related data in one request.
 5. **Error Handling**: Always check HTTP status codes and handle errors appropriately.
 6. **Search**: The search parameter looks in both product names and descriptions.
-7. **Boolean Parameters**: Use string values `'true'` or `'false'` for boolean query parameters.
+7. **Boolean Parameters**: Use the string `'true'` for boolean query parameters; anything else is treated as "no filter".
+8. **Boolean Fields**: Boolean fields in responses are `1` / `0`, not `true` / `false`.
 
 ---
 
@@ -1121,11 +1370,10 @@ curl -X POST https://http-api-1.zavhorodnii.org/api/echo \
 
 - **Type**: SQLite
 - **Location**: `./database/ecommerce.db`
-- **Initialization**: `npm run init-db`
+- **Initialization**: `npm run init-db` (the server also re-runs `database/init.sql` on every start, so the data is reset to the seed set each time it boots)
 
 ---
 
 ## Support
 
 For issues or questions, please refer to the main README.md or contact the development team.
-

@@ -21,6 +21,15 @@ server.register(helmet, {
   contentSecurityPolicy: false,
 });
 
+// Parse pagination query params. Query values always arrive as strings, so
+// they are converted to integers here (otherwise they would be echoed back
+// as strings in the `pagination` object).
+function getPagination(query: any): PaginationOptions {
+  const page = Math.max(1, parseInt(String(query?.page ?? '1'), 10) || 1);
+  const limit = Math.max(1, parseInt(String(query?.limit ?? '10'), 10) || 10);
+  return { page, limit, offset: (page - 1) * limit };
+}
+
 // Health check route
 server.get('/health', async (request, reply) => {
   return { status: 'ok', timestamp: new Date().toISOString() };
@@ -52,10 +61,7 @@ server.get('/health/db', async (request, reply) => {
 // Get all products with pagination
 server.get('/api/products', async (request, reply) => {
   try {
-    const { page = 1, limit = 10 } = request.query as { page?: number; limit?: number };
-    const offset = (page - 1) * limit;
-    
-    const products = await db.getAllProducts({ page, limit, offset });
+    const products = await db.getAllProducts(getPagination(request.query));
     return products;
   } catch (error) {
     reply.status(500);
@@ -115,8 +121,6 @@ server.get('/api/products/:id/full', async (request, reply) => {
 server.get('/api/products/search', async (request, reply) => {
   try {
     const { 
-      page = '1', 
-      limit = '10', 
       category_id, 
       brand_id, 
       min_price, 
@@ -127,11 +131,7 @@ server.get('/api/products/search', async (request, reply) => {
       sort_by, 
       sort_order 
     } = request.query as any;
-    
-    const pageNum = parseInt(page) || 1;
-    const limitNum = parseInt(limit) || 10;
-    const offset = (pageNum - 1) * limitNum;
-    
+
     const filters: ProductFilters = {
       category_id: category_id ? parseInt(String(category_id)) : undefined,
       brand_id: brand_id ? parseInt(String(brand_id)) : undefined,
@@ -144,7 +144,7 @@ server.get('/api/products/search', async (request, reply) => {
       sort_order: sort_order as any
     };
 
-    const products = await db.searchProducts(filters, { page: pageNum, limit: limitNum, offset });
+    const products = await db.searchProducts(filters, getPagination(request.query));
     return products;
   } catch (error) {
     reply.status(500);
@@ -155,7 +155,7 @@ server.get('/api/products/search', async (request, reply) => {
 // Get featured products
 server.get('/api/products/featured', async (request, reply) => {
   try {
-    const { limit = 10 } = request.query as { limit?: number };
+    const { limit } = getPagination(request.query);
     const products = await db.getFeaturedProducts(limit);
     return { products, count: products.length };
   } catch (error) {
@@ -168,16 +168,13 @@ server.get('/api/products/featured', async (request, reply) => {
 server.get('/api/categories/:id/products', async (request, reply) => {
   try {
     const { id } = request.params as { id: string };
-    const { page = 1, limit = 10 } = request.query as { page?: number; limit?: number };
-    
     const categoryId = parseInt(id);
     if (isNaN(categoryId)) {
       reply.status(400);
       return { error: 'Invalid category ID' };
     }
 
-    const offset = (page - 1) * limit;
-    const products = await db.getProductsByCategory(categoryId, { page, limit, offset });
+    const products = await db.getProductsByCategory(categoryId, getPagination(request.query));
     return products;
   } catch (error) {
     reply.status(500);
@@ -325,10 +322,7 @@ server.get('/api/suppliers/:id', async (request, reply) => {
 // Get all users with pagination
 server.get('/api/users', async (request, reply) => {
   try {
-    const { page = 1, limit = 10 } = request.query as { page?: number; limit?: number };
-    const offset = (page - 1) * limit;
-    
-    const users = await db.getAllUsers({ page, limit, offset });
+    const users = await db.getAllUsers(getPagination(request.query));
     return users;
   } catch (error) {
     reply.status(500);
@@ -366,16 +360,13 @@ server.get('/api/users/:id', async (request, reply) => {
 server.get('/api/products/:id/reviews', async (request, reply) => {
   try {
     const { id } = request.params as { id: string };
-    const { page = 1, limit = 10 } = request.query as { page?: number; limit?: number };
-    
     const productId = parseInt(id);
     if (isNaN(productId)) {
       reply.status(400);
       return { error: 'Invalid product ID' };
     }
 
-    const offset = (page - 1) * limit;
-    const reviews = await db.getProductReviews(productId, { page, limit, offset });
+    const reviews = await db.getProductReviews(productId, getPagination(request.query));
     return reviews;
   } catch (error) {
     reply.status(500);
@@ -389,16 +380,13 @@ server.get('/api/products/:id/reviews', async (request, reply) => {
 server.get('/api/users/:id/orders', async (request, reply) => {
   try {
     const { id } = request.params as { id: string };
-    const { page = 1, limit = 10 } = request.query as { page?: number; limit?: number };
-    
     const userId = parseInt(id);
     if (isNaN(userId)) {
       reply.status(400);
       return { error: 'Invalid user ID' };
     }
 
-    const offset = (page - 1) * limit;
-    const orders = await db.getUserOrders(userId, { page, limit, offset });
+    const orders = await db.getUserOrders(userId, getPagination(request.query));
     return orders;
   } catch (error) {
     reply.status(500);
