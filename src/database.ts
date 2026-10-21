@@ -300,9 +300,17 @@ class Database {
       params.push(searchTerm, searchTerm);
     }
 
-    const orderBy = filters.sort_by || 'created_at';
-    const orderDirection = filters.sort_order || 'desc';
-    const orderClause = `ORDER BY p.${orderBy} ${orderDirection.toUpperCase()}`;
+    // Only allow known columns in ORDER BY (the values come straight from the
+    // query string). `rating` is exposed in the API but stored as `rating_average`.
+    const sortColumns: Record<string, string> = {
+      name: 'name',
+      price: 'price',
+      rating: 'rating_average',
+      created_at: 'created_at'
+    };
+    const orderBy = sortColumns[filters.sort_by || ''] || 'created_at';
+    const orderDirection = filters.sort_order === 'asc' ? 'ASC' : 'DESC';
+    const orderClause = `ORDER BY p.${orderBy} ${orderDirection}`;
 
     const countQuery = `SELECT COUNT(*) as total FROM products p ${whereClause}`;
     const dataQuery = `SELECT p.* FROM products p ${whereClause} ${orderClause} LIMIT ? OFFSET ?`;
